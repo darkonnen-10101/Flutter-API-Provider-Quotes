@@ -1,138 +1,55 @@
+/*
 import 'dart:io';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:http/http.dart' as http;
+import 'package:quotespremium/src/models/data_quote.dart';
+import 'package:quotespremium/src/networking/fetch_api.dart';
+import 'package:quotespremium/src/pages/settings_page.dart';
+import 'package:quotespremium/src/providers/change_language.dart';
+import 'dart:async';
+import 'package:progress_dialog/progress_dialog.dart';
+*/
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:quotespremium/src/pages/settings_page.dart';
+import 'package:quotespremium/src/data/languages_list.dart';
 import 'package:quotespremium/src/providers/change_background_color.dart';
 import 'package:quotespremium/src/providers/change_gradient.dart';
+import 'package:quotespremium/src/providers/change_quote_and_author.dart';
 import 'package:quotespremium/src/providers/change_text_color.dart';
 import 'package:quotespremium/src/widgets/fancy_fab.dart';
-import 'dart:async';
+import 'package:quotespremium/src/widgets/privacy_policy.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:flutter/rendering.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:linear_gradient/linear_gradient.dart';
-import 'package:progress_dialog/progress_dialog.dart';
-/*
-
-English, Spanish, Portuguese, Italian, German,
-French, Czech, Slovak, Polish, Hungarian, Russian
-
-e9492e81femsh34b99eb6aa85e90p1311eejsnce09d6dad505
-
-quotes15.p.rapidapi.com
- */
-
-class Originator {
-  final String name;
-  Originator({this.name});
-
-  factory Originator.fromJson(Map<String, dynamic> json) {
-    return Originator(
-      name: json['name'],
-    );
-  }
-}
-
-class Quote {
-  final String language;
-  final String content;
-  final Originator originator;
-
-  Quote({this.language, this.content, this.originator});
-
-  factory Quote.fromJson(Map<String, dynamic> parsedJson) {
-    return Quote(
-      language: parsedJson['language_code'],
-      content: parsedJson['content'],
-      originator: Originator.fromJson(parsedJson['originator']),
-    );
-  }
-}
+import 'package:share/share.dart';
 
 class HomePage extends StatefulWidget {
+  static ScreenshotController screenshotController = ScreenshotController();
+  static final scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
   // Screenshot
-  // GlobalKey _globalKey = GlobalKey();
-  // File _imageFile;
-  ScreenshotController screenshotController = ScreenshotController();
   // Screenshot
 
   PermissionStatus _status;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  Map data;
-  String quote;
-  String author;
-  String currentLanguage = 'en';
-  List languages = [
-    'English',
-    'Spanish',
-    'Portuguese',
-    'Italian',
-    'German',
-    'French',
-    'Czech',
-    'Slovak',
-    'Polish',
-    'Hungarian',
-    'Russian'
-  ];
-  List abreviatedLang = [
-    'en',
-    'es',
-    'pt',
-    'it',
-    'de',
-    'fr',
-    'cs',
-    'sk',
-    'pl',
-    'hu',
-    'ru',
-  ];
-
-  // Color
-  // Color
-
-  Future fetchQuote() async {
-    final response = await http.get(
-      'https://quotes15.p.rapidapi.com/quotes/random/?language_code=$currentLanguage',
-      headers: {
-        "x-rapidapi-host": "quotes15.p.rapidapi.com",
-        "x-rapidapi-key": "e9492e81femsh34b99eb6aa85e90p1311eejsnce09d6dad505",
-      },
-    );
-
-    data = json.decode(response.body);
-    /*
-  print(Quote.fromJson(responseJson).content);
-  print(Quote.fromJson(responseJson).originator.name);
-  print(Quote.fromJson(responseJson).language);
-*/
-    if (response.statusCode == 200) {
-      // return Quote.fromJson(responseJson);
-      setState(() {
-        quote = data["content"];
-        author = data["originator"]["name"];
-      });
-    } else {
-      throw Exception('Failed to load data from API');
-    }
-  }
+  final List languages = Languages.languages;
+  final List abreviatedLang = Languages.abreviatedLang;
 
   @override
   void initState() {
     super.initState();
-    fetchQuote();
+
+    // fetchQuote(); ======================================================>>>>>>>>>>>>>> IMPORTANT ! ! !
     PermissionHandler()
         .checkPermissionStatus(PermissionGroup.storage)
         .then(_updateStatus);
@@ -148,6 +65,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+/*
   void _askPermission() {
     PermissionHandler()
         .requestPermissions([PermissionGroup.storage]).then(_onStatusRequested);
@@ -161,19 +79,28 @@ class _HomePageState extends State<HomePage> {
       _updateStatus(status);
     }
   }
-
+*/
   @override
   Widget build(BuildContext context) {
+    ChangeQuoteAndAuthor changeTextQuoteAuthor =
+        Provider.of<ChangeQuoteAndAuthor>(context);
+
+    // Language
+    // ChangeLanguage _currentLanguage = Provider.of<ChangeLanguage>(context);
+
+    // Text color
     ChangeTextColor textColorProvider = Provider.of<ChangeTextColor>(context);
+    Color _textColor = textColorProvider.colorBase;
+    // Color _currentTextColor = textColorProvider.colorBase;
+
+    // Background color
     ChangeBackgroundColor backgroundColorProvider =
         Provider.of<ChangeBackgroundColor>(context);
-
-    Color _textColor = textColorProvider.colorBase;
     Color _backgroundColor = backgroundColorProvider.backgroundBase;
-    Color _currentTextColor = textColorProvider.colorBase;
-    // Color _currentBackgroundColor = Colors.white;
-    // bool _gradientContainer = true;
 
+    ChangeGradient _gradientConfig = Provider.of<ChangeGradient>(context);
+
+/*
     // Progress Dialog
     ProgressDialog pr;
 
@@ -193,8 +120,53 @@ class _HomePageState extends State<HomePage> {
             color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600));
     // Progress Dialog
 
+    Future fetchQuote() async {
+      final response = await http.get(
+        'https://quotes15.p.rapidapi.com/quotes/random/?language_code=${_currentLanguage.language}',
+        headers: {
+          "x-rapidapi-host": "quotes15.p.rapidapi.com",
+          "x-rapidapi-key":
+              "e9492e81femsh34b99eb6aa85e90p1311eejsnce09d6dad505",
+        },
+      );
+
+      data = json.decode(response.body);
+      /*
+  print(Quote.fromJson(responseJson).content);
+  print(Quote.fromJson(responseJson).originator.name);
+  print(Quote.fromJson(responseJson).language);
+*/
+      if (response.statusCode == 200) {
+        // return Quote.fromJson(responseJson);
+        setState(() {
+          quote = data["content"];
+          author = data["originator"]["name"];
+        });
+      } else {
+        throw Exception('Failed to load data from API');
+      }
+    }
+
+ */
+/*
+
+    Future hitApi() async {
+      Provider.of<FetchApiClass>(context, listen: false)
+          .setLang(_currentLanguage.language);
+      DataQuote dataQuote =
+          await Provider.of<FetchApiClass>(context, listen: false).fetchQuote();
+      Provider.of<FetchApiClass>(context, listen: false)
+          .setDataQuote(dataQuote);
+      setState(() {
+        changeTextQuoteAuthor.setQuoteContent = dataQuote.content;
+
+        changeTextQuoteAuthor.setQuoteAuthor = dataQuote.originator.name;
+      });
+    }
+
     void showFetch() {
-      fetchQuote();
+      // fetchQuote();
+      hitApi();
       pr.show();
       Future.delayed(Duration(
         milliseconds: 1500,
@@ -203,19 +175,16 @@ class _HomePageState extends State<HomePage> {
       });
     }
 
-    void changeTextColor(Color color) =>
-        setState(() => _currentTextColor = color);
-    // void changeBackgroundColor(Color color) =>         setState(() => _currentBackgroundColor = color);
-
-    ChangeGradient _gradientConfig = Provider.of<ChangeGradient>(context);
     void _displaySnackBar(BuildContext context) {
       final snackBar = SnackBar(
         content: Text(
           'Image Saved to Gallery',
         ),
       );
-      _scaffoldKey.currentState.showSnackBar(snackBar);
+      HomePage.scaffoldKey.currentState.showSnackBar(snackBar);
     }
+
+    // void changeBackgroundColor(Color color) =>         setState(() => _currentBackgroundColor = color);
 
     Future<void> _displayDialog(BuildContext context) async {
       return showDialog<void>(
@@ -257,7 +226,8 @@ class _HomePageState extends State<HomePage> {
                   Navigator.of(context).pop();
                   setState(
                     () {
-                      currentLanguage = abreviatedLang[selectedRadio];
+                      _currentLanguage.languageTraduction =
+                          abreviatedLang[selectedRadio];
                       showFetch();
                     },
                   );
@@ -267,6 +237,16 @@ class _HomePageState extends State<HomePage> {
           );
         },
       );
+    }
+*/
+
+    Future<void> _displayDialog(BuildContext context) async {
+      return showDialog<void>(
+          context: context,
+          builder: (BuildContext context) {
+            int selectedRadio = 0;
+            return PrivacyPolicy();
+          });
     }
 
     return SafeArea(
@@ -308,6 +288,19 @@ class _HomePageState extends State<HomePage> {
                   title: Text('Privacy Policy'),
                   onTap: () {
                     Navigator.pop(context);
+
+                    _displayDialog(context);
+                  },
+                ),
+                ListTile(
+                  trailing: Icon(
+                    Icons.share,
+                    color: Colors.black,
+                  ),
+                  title: Text('Share App'),
+                  onTap: () {
+                    Share.share(
+                        'Check this app! https://play.google.com/store/apps/details?id=com.mundodiferente.premiumquotes');
                   },
                 ),
                 ListTile(
@@ -324,7 +317,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        key: _scaffoldKey,
+        key: HomePage.scaffoldKey,
         appBar: AppBar(
           actions: <Widget>[],
           iconTheme: IconThemeData(
@@ -340,11 +333,15 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: _backgroundColor,
         ),
         body: Screenshot(
-          controller: screenshotController,
+          controller: HomePage.screenshotController,
           child: Container(
             height: MediaQuery.of(context).size.height,
             decoration: //_gradientContainer == true ?
                 BoxDecoration(
+              border: Border.all(
+                color: _textColor,
+                width: 10.0,
+              ),
               gradient: LinearGradientStyle.linearGradient(
                   orientation: _gradientConfig.gradientOrientation,
                   gradientType: _gradientConfig.gradientColor),
@@ -363,31 +360,89 @@ class _HomePageState extends State<HomePage> {
                     height: 100.0,
                   ),
 
-                  Text(
-                    quote == null
-                        ? 'Quote'
-                        : '\' ${utf8.decode(quote.runes.toList())} \'',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: _textColor,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 25.0,
-                        fontStyle: FontStyle.italic),
-                  ),
+                  changeTextQuoteAuthor.quoteContent == null
+                      ? Center(
+                          child: new RichText(
+                            text: new TextSpan(children: [
+                              TextSpan(
+                                text: 'Press the ',
+                                style: TextStyle(
+                                  color: _textColor,
+                                  fontSize: 25.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                              WidgetSpan(
+                                child: new Icon(Icons.play_arrow,
+                                    size: 50.0, color: _textColor),
+                              ),
+                              TextSpan(
+                                text: ' button.',
+                                style: TextStyle(
+                                  color: _textColor,
+                                  fontSize: 25.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                            ]),
+                          ),
+                        )
+                      : Text(
+                          /*changeTextQuoteAuthor.quoteContent == null
+                        ? 'Press the Play button'
+                        :*/
+                          '\' ${utf8.decode(changeTextQuoteAuthor.quoteContent.runes.toList())} \'',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: _textColor,
+                            fontSize: 25.0,
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+
                   SizedBox(
                     height: 30.0,
                   ),
-                  Text(
-                    quote == null
-                        ? 'Author'
-                        : '${utf8.decode(author.runes.toList())}',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: _textColor,
-                      fontWeight: FontWeight.w300,
-                      fontSize: 22.0,
-                    ),
-                  ),
+
+                  changeTextQuoteAuthor.quoteContent == null
+                      ? Center(
+                          child: new RichText(
+                            text: new TextSpan(children: [
+                              TextSpan(
+                                text: 'Inside the ',
+                                style: TextStyle(
+                                  color: _textColor,
+                                  fontSize: 22.0,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                              WidgetSpan(
+                                child: new Icon(Icons.menu,
+                                    size: 30.0, color: _textColor),
+                              ),
+                              TextSpan(
+                                text: ' menu.',
+                                style: TextStyle(
+                                  color: _textColor,
+                                  fontSize: 22.0,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                            ]),
+                          ),
+                        )
+                      : Text(
+                          '${utf8.decode(changeTextQuoteAuthor.quoteAuthor.runes.toList())}',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: _textColor,
+                            fontWeight: FontWeight.w300,
+                            fontSize: 22.0,
+                          ),
+                        ),
                   SizedBox(
                     height: 150.0,
                   ),
@@ -487,34 +542,6 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
               width: 20.0,
             ),
-            FloatingActionButton(
-              heroTag: 'download',
-              child: Icon(
-                Icons.file_download,
-                color: _backgroundColor,
-              ),
-              onPressed: () {
-                if (_status != PermissionStatus.granted) {
-                  _askPermission();
-                } else {
-                  // _imageFile = null;
-                  screenshotController
-                      .capture(delay: Duration(milliseconds: 10))
-                      .then((File image) async {
-                    //print("Capture Done");
-                    setState(() {
-                      // _imageFile = image;
-                    });
-                    // final result =
-                    await ImageGallerySaver.saveImage(image.readAsBytesSync());
-                    // print("File Saved to Gallery");
-                    _displaySnackBar(context);
-                  }).catchError((onError) {
-                    print(onError);
-                  });
-                }
-              },
-            ),
             SizedBox(
               width: 20.0,
             ),
@@ -531,9 +558,8 @@ class _HomePageState extends State<HomePage> {
                 });
               },
             ),
-            FancyFab(),
           ],
-        ), */
+        ),*/
       ),
     );
   }

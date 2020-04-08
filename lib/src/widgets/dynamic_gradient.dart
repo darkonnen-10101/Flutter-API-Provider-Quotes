@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:linear_gradient/linear_gradient.dart';
 import 'package:provider/provider.dart';
-import 'package:quotespremium/src/models/gradient_list.dart';
+import 'package:quotespremium/src/data/gradient_list.dart';
 import 'package:quotespremium/src/providers/change_gradient.dart';
 
 class DynamicGradient extends StatefulWidget {
@@ -21,44 +21,53 @@ class _DynamicGradientState extends State<DynamicGradient> {
       itemCount: listOfGradients.length,
       itemBuilder: (context, index) {
         if (index == 0) {
-          return SwitchListTile(
-            title: Text(
-              'Vertical gradient',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            onChanged: (value) {
-              setState(
-                () {
-                  _gradientConfig.valueState = value;
-                  _gradientConfig.valueState
-                      ? _gradientConfig.gradientOrientation =
-                          LinearGradientStyle.ORIENTATION_VERTICAL
-                      : _gradientConfig.gradientOrientation =
-                          LinearGradientStyle.ORIENTATION_HORIZONTAL;
-                },
-              );
-            },
-            value: _gradientConfig.valueState,
-            activeTrackColor: Colors.lightGreenAccent,
-            activeColor: Colors.green,
-          );
-        } else {
-          return Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradientStyle.linearGradient(
-                orientation: _gradientConfig.gradientOrientation,
-                gradientType: listOfGradients[index],
+          return Card(
+            elevation: 10.0,
+            child: SwitchListTile(
+              title: Text(
+                'Vertical gradient',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            child: ListTile(
-              onTap: () {
+              onChanged: (value) {
                 setState(
                   () {
-                    _gradientConfig.gradientColor = listOfGradients[index];
-                    Navigator.of(context).pop();
+                    _gradientConfig.valueState = value;
+                    _gradientConfig.valueState
+                        ? _gradientConfig.gradientOrientation =
+                            LinearGradientStyle.ORIENTATION_VERTICAL
+                        : _gradientConfig.gradientOrientation =
+                            LinearGradientStyle.ORIENTATION_HORIZONTAL;
                   },
                 );
               },
+              value: _gradientConfig.valueState,
+              activeTrackColor: Colors.lightGreenAccent,
+              activeColor: Colors.green,
+            ),
+          );
+        } else {
+          return Card(
+            elevation: 10.0,
+            child: Container(
+              height: 100.0,
+              decoration: BoxDecoration(
+                gradient: LinearGradientStyle.linearGradient(
+                  orientation: _gradientConfig.gradientOrientation,
+                  gradientType: listOfGradients[index],
+                ),
+              ),
+              child: ListTile(
+                onTap: () {
+                  setState(
+                    () {
+                      _gradientConfig.gradientColor = listOfGradients[index];
+                      Navigator.of(context).pop();
+                    },
+                  );
+                },
+              ),
             ),
           );
         }
