@@ -2,6 +2,8 @@ import 'dart:io';
 
 // TODO CONFIGURAR IDS DE APP Y DE ADS
 
+ASDADSDSADASDAS
+
 String getAppId() {
   if (Platform.isIOS) {
     return 'ca-app-pub-3940256099942544~1458002511';
