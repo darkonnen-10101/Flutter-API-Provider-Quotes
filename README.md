@@ -158,8 +158,8 @@
 > Debajo de
 >
 
-    `flutter {
-        source '../..'
+    `flutter {  
+        source '../..'  
     }`
 
 > Agregar
