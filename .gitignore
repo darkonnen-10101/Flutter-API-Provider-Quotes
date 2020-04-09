@@ -26,7 +26,7 @@
 .flutter-plugins
 .flutter-plugins-dependencies
 .packages
-.pub-cache/
+.pub-cache/ca
 .pub/
 /build/
 
@@ -35,3 +35,6 @@ lib/generated_plugin_registrant.dart
 
 # Exceptions to above rules.
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+
+key.properties
+src/admob/admob_config.dart

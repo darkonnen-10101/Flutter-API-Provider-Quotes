@@ -1,10 +1,12 @@
 import 'dart:io';
+import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:quotespremium/src/admob/admob_config.dart';
 import 'package:quotespremium/src/models/data_quote.dart';
 import 'package:quotespremium/src/data/languages_list.dart';
 import 'package:quotespremium/src/networking/fetch_api.dart';
@@ -50,8 +52,21 @@ class _FancyFabState extends State<FancyFab>
   // Dropdown
   // Dropdown
 
+  AdmobInterstitial interstitialAd;
+
+  int _counter = 0;
+
   @override
   initState() {
+    super.initState();
+
+    interstitialAd = AdmobInterstitial(
+      adUnitId: getInterstitialAdUnitId(),
+      listener: (AdmobAdEvent event, Map<String, dynamic> args) {
+        if (event == AdmobAdEvent.closed) interstitialAd.load();
+      },
+    );
+
     PermissionHandler()
         .checkPermissionStatus(PermissionGroup.storage)
         .then(_updateStatus);
@@ -85,7 +100,7 @@ class _FancyFabState extends State<FancyFab>
         curve: _curve,
       ),
     ));
-    super.initState();
+    interstitialAd.load();
   }
 
   void _updateStatus(PermissionStatus status) {
@@ -113,7 +128,8 @@ class _FancyFabState extends State<FancyFab>
   }
 
   @override
-  dispose() {
+  void dispose() {
+    interstitialAd.dispose();
     _animationController.dispose();
     super.dispose();
   }
@@ -273,11 +289,15 @@ class _FancyFabState extends State<FancyFab>
             Icons.file_download,
             color: Colors.black,
           ),
-          onPressed: () {
+          onPressed: () async {
             if (_status != PermissionStatus.granted) {
               _askPermission();
             } else {
               // _imageFile = null;
+              if (await interstitialAd.isLoaded) {
+                interstitialAd.show();
+              }
+
               screenshotController
                   .capture(delay: Duration(milliseconds: 10))
                   .then((File image) async {
@@ -405,8 +425,18 @@ class _FancyFabState extends State<FancyFab>
             Icons.play_arrow,
             color: Colors.black,
           ),
-          onPressed: () {
+          onPressed: () async {
             // print(fetchQuote().runtimeType);
+            _counter++;
+            print(_counter);
+            if (await interstitialAd.isLoaded && _counter >= 7) {
+              Future.delayed(const Duration(milliseconds: 2500), () {
+                interstitialAd.show();
+              });
+              setState(() {
+                _counter = 0;
+              });
+            }
             setState(() {
               showFetch();
             });

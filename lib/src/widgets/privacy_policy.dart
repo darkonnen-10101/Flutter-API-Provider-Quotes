@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:html/dom.dart' as dom;
 import 'package:flutter_html/flutter_html.dart';
 
 class PrivacyPolicy extends StatelessWidget {

@@ -1,16 +1,178 @@
-# quotespremium
+## Agregar icono
 
-Flutter app consuming and quotes API
 
-## Getting Started
+### Instalar flutter_launcher_icon
 
-This project is a starting point for a Flutter application.
+> En pubspec.yaml, bajo dev dependencies, agregar
+>
+> `dev_dependencies:`
+>
+>>   `flutter_test:`
+>
+>>     `sdk: flutter`
+>     
+>>     `flutter_launcher_icons: ^0.7.4`
 
-A few resources to get you started if this is your first Flutter project:
+### Agregar icono en 1024 x 1024
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+> En pubspec.yaml, al mismo nivel de dev dependencies
+>
+> `flutter_icons:`
+>
+>>   `android: "launcher_icon"`
+>
+>>   `ios: true`
+>
+>>   `image_path: "assets/icon/icon.jpg"`
+>
+>>   `adaptive_icon_background: "assets/icon/icon.jpg"`
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+### Crear carpeta 'icon' en assets y agregar la imagen del icono
+
+> src -> icon -> icon.jpg
+
+### Run this commands
+
+> flutter packages get
+>
+> flutter packages run flutter_launcher_icons:main
+
+
+## Configurar el Splash Screen
+
+> Abrir el archivo launch_background.xml
+>
+> android -> app -> src -> main -> res -> drawable -> launch_background.xml
+>
+> Remove <!-- --> and change this line like this -> ' android:src="@mipmap/launcher_icon" '
+>
+> You can also change the splash screen color in -> ' <item android:drawable="@android:color/white" /> '
+
+
+## Ajustar el nombre de la app
+
+> En AndroidManifest.xml agregar:
+>
+> android:label="nameOfMyApp"
+
+
+## DEPLOYMENT TO PLAYSTORE
+
+### Cambiar el nombre de la App
+
+> Buscar y abrir el archivo build.gradle, el que se encuentra dentro de la carpeta android -> app
+>
+> Edit this line
+>
+> `defaultConfig {`
+>
+>>   `applicationId "com.devName.appName" ... }`
+>
+> Ahora buscar y abrir el archivo AndroidManifest.xml, que se encuentra dentro de la carpeta android -> app -> src -> main
+>
+> Edit this line
+>
+> `<manifest xmlns: android="http ://schemas.android.com/apk/res/android" `
+>
+>   ` package="com.devName.appName"> `
+>
+> Ambos nombres deben ser iguales!
+
+
+### Cambiar la version de la App (cada vez que se haga despliegue)
+
+> En el archivo build.gradle que se encuentra dentro de la carpeta android -> app
+>
+> `defaultConfig {....`
+>
+>>   `versionCode 1`
+>
+>>   `versionName "1.0.0"`
+>
+
+
+### Especificar la version minima para usar la App
+
+> En el mismo archivo build.gradle
+>
+> `defaultConfig {....`
+>
+>>   `minSdkVersion 16`
+>
+>>   `targetSdkVersion 28`
+>
+> Se puede dejar por defecto
+
+
+## Firmar la App
+
+> Con la keystore ya generada, se debe crear en la carpeta android, un archivo llamado
+>
+> `key.properties`
+>
+> Agregar la info del key.jks al archivo (copypaste)
+
+
+## Agregar key.properties al .gitignore (y también el archivo de getUnitId() de admob)
+
+> Agregar al final del archivo
+
+
+## Configurar la firma en gradle
+
+> En el archivo build.gradle que se encuentra dentro de la carpeta android -> app
+>
+> agregar antes de `buildtypes {.. `
+>
+    `signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
+        }
+    }`
+
+
+## Generar version de 64bits
+
+> En el archivo build.gradle que se encuentra dentro de la carpeta android -> app
+>
+> Debajo de
+>
+
+    `flutter {
+        source '../..'
+    }`
+
+> Agregar
+>
+
+    `afterEvaluate {
+        mergeReleaseJniLibFolders.doLast {
+            def archTypes = ["arm-release", "arm64-release"]
+            archTypes.forEach { item ->
+                copy {
+                    from zipTree("$flutterRoot/bin/cache/artifacts/engine/android-$item/flutter.jar")
+                    include 'lib/*/libflutter.so'
+                    into "$buildDir/intermediates/jniLibs/release/"
+                    eachFile {
+                        it.path = it.path.replaceFirst("lib/", "")
+                    }
+                }
+            }
+        }
+    }`
+
+
+## Generar la version de produccion de la App en formato AppBundle
+
+> Correr el código
+>
+> `flutter build appbundle`
+>
+> (Correr `flutter build apk --release` genera un .apk, no un .ab )
+
+
+## Subir a PlayStore
