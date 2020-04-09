@@ -14,8 +14,7 @@
 >
 `dev_dependencies:
   flutter_test:
-    sdk: flutter
-
+  sdk: flutter
   flutter_launcher_icons: ^0.7.4`
 
 ### Agregar icono en 1024 x 1024
@@ -24,11 +23,8 @@
 >
 
 `flutter_icons:
-
   android: "launcher_icon"
-
   ios: true
-
   image_path: "assets/icon/icon.jpg"`
 
 ### Crear carpeta 'icon' en assets y agregar la imagen del icono
@@ -196,11 +192,17 @@
 
 > y luego
 
-`flutter build appbundle` o `flutter build appbundle --target-platform android-arm,android-arm6`
+`flutter build appbundle`
 
-
-> (Correr `flutter build apk --release` genera un .apk, no un .ab )
 > Se guarda en <appRoot>/build/app/outputs/bundle/release/app-release.aab
+
+> Por otro lado, para AppStores que no tienen soporte para AppBundle, correr el comando
+
+`flutter build apk --split-per-abi`
+
+>> No recomendado `flutter build appbundle --target-platform android-arm,android-arm6`
+>> (Correr `flutter build apk --release` genera un .apk, no un .ab )
+
 
 ***
 
