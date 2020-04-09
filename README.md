@@ -1,3 +1,9 @@
+# Config to release an App
+
+
+***
+
+
 ## Agregar icono
 
 
@@ -5,28 +11,22 @@
 
 > En pubspec.yaml, bajo dev dependencies, agregar
 >
-> `dev_dependencies:`
 >
->>   `flutter_test:`
->
->>     `sdk: flutter`
->     
->>     `flutter_launcher_icons: ^0.7.4`
+`dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_launcher_icons: ^0.7.4`
 
 ### Agregar icono en 1024 x 1024
 
 > En pubspec.yaml, al mismo nivel de dev dependencies
 >
-> `flutter_icons:`
->
->>   `android: "launcher_icon"`
->
->>   `ios: true`
->
->>   `image_path: "assets/icon/icon.jpg"`
->
->>   `adaptive_icon_background: "assets/icon/icon.jpg"`
 
+`flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/icon.jpg"`
 
 ### Crear carpeta 'icon' en assets y agregar la imagen del icono
 
@@ -34,30 +34,37 @@
 
 ### Run this commands
 
-> flutter packages get
->
-> flutter packages run flutter_launcher_icons:main
+`flutter packages get`
 
+`flutter packages run flutter_launcher_icons:main`
 
-## Configurar el Splash Screen
+***
+
+## CONFIGURAR SPLASH SCREEN
 
 > Abrir el archivo launch_background.xml
 >
 > android -> app -> src -> main -> res -> drawable -> launch_background.xml
 >
-> Remove <!-- --> and change this line like this -> ' android:src="@mipmap/launcher_icon" '
+> Remove <!-- --> and change this line like this -> ' `android:src="@mipmap/launcher_icon"` '
 >
-> You can also change the splash screen color in -> ' <item android:drawable="@android:color/white" /> '
+> You can also change the splash screen color in -> ' `<item android:drawable="@android:color/white" />` '
+
+
+***
 
 
 ## Ajustar el nombre de la app
 
 > En AndroidManifest.xml agregar:
 >
-> android:label="nameOfMyApp"
+`android:label="nameOfMyApp"`
 
 
-## DEPLOYMENT TO PLAYSTORE
+***
+
+
+## Deplayment to PlayStore
 
 ### Cambiar el nombre de la App
 
@@ -65,18 +72,17 @@
 >
 > Edit this line
 >
-> `defaultConfig {`
->
->>   `applicationId "com.devName.appName" ... }`
->
+
+`defaultConfig {
+   applicationId "com.devName.appName" ... }`
+
 > Ahora buscar y abrir el archivo AndroidManifest.xml, que se encuentra dentro de la carpeta android -> app -> src -> main
 >
 > Edit this line
->
-> `<manifest xmlns: android="http ://schemas.android.com/apk/res/android" `
->
->   ` package="com.devName.appName"> `
->
+
+`<manifest xmlns: android="http ://schemas.android.com/apk/res/android"
+   package="com.devName.appName"> `
+
 > Ambos nombres deben ser iguales!
 
 
@@ -84,34 +90,38 @@
 
 > En el archivo build.gradle que se encuentra dentro de la carpeta android -> app
 >
-> `defaultConfig {....`
->
->>   `versionCode 1`
->
->>   `versionName "1.0.0"`
->
+
+ `defaultConfig {....
+    .....
+    versionCode 1
+    versionName "1.0.0"` ....
+
 
 
 ### Especificar la version minima para usar la App
 
 > En el mismo archivo build.gradle
->
-> `defaultConfig {....`
->
->>   `minSdkVersion 16`
->
->>   `targetSdkVersion 28`
->
+
+`defaultConfig {....
+    minSdkVersion 16
+    targetSdkVersion 28`
+
 > Se puede dejar por defecto
+
+
+***
 
 
 ## Firmar la App
 
 > Con la keystore ya generada, se debe crear en la carpeta android, un archivo llamado
 >
-> `key.properties`
+`key.properties`
 >
 > Agregar la info del key.jks al archivo (copypaste)
+
+
+***
 
 
 ## Agregar key.properties al .gitignore (y también el archivo de getUnitId() de admob)
@@ -119,12 +129,15 @@
 > Agregar al final del archivo
 
 
+***
+
+
 ## Configurar la firma en gradle
 
 > En el archivo build.gradle que se encuentra dentro de la carpeta android -> app
 >
 > agregar antes de `buildtypes {.. `
->
+
     `signingConfigs {
         release {
             keyAlias keystoreProperties['keyAlias']
@@ -133,6 +146,9 @@
             storePassword keystoreProperties['storePassword']
         }
     }`
+
+
+***
 
 
 ## Generar version de 64bits
@@ -147,7 +163,6 @@
     }`
 
 > Agregar
->
 
     `afterEvaluate {
         mergeReleaseJniLibFolders.doLast {
@@ -166,13 +181,27 @@
     }`
 
 
+
+***
+
+
 ## Generar la version de produccion de la App en formato AppBundle
 
-> Correr el código
->
-> `flutter build appbundle`
->
+> Correr el código en la terminal, posicionarse en el root del proyecto y escribir
+
+`flutter clean`
+
+> y luego
+
+`flutter build appbundle` o `flutter build appbundle --target-platform android-arm,android-arm6`
+
+
 > (Correr `flutter build apk --release` genera un .apk, no un .ab )
+> Se guarda en <appRoot>/build/app/outputs/bundle/release/app-release.aab
+
+***
 
 
-## Subir a PlayStore
+## Finalmente subir a PlayStore
+
+Y eso es todo
