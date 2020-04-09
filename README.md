@@ -23,9 +23,9 @@
 > En pubspec.yaml, al mismo nivel de dev dependencies
 >
 
-`flutter_icons:<br/>
-  android: "launcher_icon"<br/>
-  ios: true<br/>
+`flutter_icons:
+  android: "launcher_icon"
+  ios: true
   image_path: "assets/icon/icon.jpg"`
 
 ### Crear carpeta 'icon' en assets y agregar la imagen del icono
@@ -73,14 +73,14 @@
 > Edit this line
 >
 
-`defaultConfig {<br/>
+`defaultConfig {
    applicationId "com.devName.appName" ... }`
 
 > Ahora buscar y abrir el archivo AndroidManifest.xml, que se encuentra dentro de la carpeta android -> app -> src -> main
 >
 > Edit this line
 
-`<manifest xmlns: android="http ://schemas.android.com/apk/res/android"<br/>
+`<manifest xmlns: android="http ://schemas.android.com/apk/res/android"
    package="com.devName.appName"> `
 
 > Ambos nombres deben ser iguales!
@@ -91,9 +91,9 @@
 > En el archivo build.gradle que se encuentra dentro de la carpeta android -> app
 >
 
- `defaultConfig {....<br/>
-    .....<br/>
-    versionCode 1<br/>
+ `defaultConfig {....
+    .....
+    versionCode 1
     versionName "1.0.0"` ....
 
 
@@ -102,8 +102,8 @@
 
 > En el mismo archivo build.gradle
 
-`defaultConfig {.... <br/>
-    minSdkVersion 16 <br/>
+`defaultConfig {....
+    minSdkVersion 16
     targetSdkVersion 28`
 
 > Se puede dejar por defecto
