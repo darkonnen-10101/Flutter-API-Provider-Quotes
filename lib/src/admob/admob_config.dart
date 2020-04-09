@@ -1,8 +1,7 @@
 import 'dart:io';
 
 // TODO CONFIGURAR IDS DE APP Y DE ADS
-
-ASDADSDSADASDAS
+// TODO CONFIGURAR IDS DE APP Y DE ADS
 
 String getAppId() {
   if (Platform.isIOS) {
