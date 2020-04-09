@@ -37,5 +37,5 @@ lib/generated_plugin_registrant.dart
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
 key.properties
-lib/src/admob/admob_config.dart
+/src/admob/
 
