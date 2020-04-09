@@ -24,8 +24,11 @@
 >
 
 `flutter_icons:
+
   android: "launcher_icon"
+
   ios: true
+
   image_path: "assets/icon/icon.jpg"`
 
 ### Crear carpeta 'icon' en assets y agregar la imagen del icono
