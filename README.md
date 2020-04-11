@@ -135,7 +135,7 @@
 
 > En el archivo build.gradle que se encuentra dentro de la carpeta android -> app
 >
-> agregar antes de `buildtypes {.. `
+> Reemplazar todo `buildtypes {.. ` con
 
     `signingConfigs {
         release {
@@ -144,8 +144,13 @@
             storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
             storePassword keystoreProperties['storePassword']
         }
+    }
+    
+    buildTypes {
+       release {
+           signingConfig signingConfigs.release
+       }
     }`
-
 
 ***
 

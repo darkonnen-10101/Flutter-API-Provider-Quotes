@@ -31,7 +31,9 @@
             android:value="2" />
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>         <!-- TODO ESTE HAY QUE CAMBIAR!!!! -->
+            android:value="ca-app-pub-5110921575057322~3782162606"/>  <!--        App ID real de Admob-->
+        <!--    android:value="ca-app-pub-3940256099942544~3347511713"/>         App ID de prueba -->
+
 
     </application>
 </manifest>

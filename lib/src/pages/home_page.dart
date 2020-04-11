@@ -25,6 +25,8 @@ class HomePage extends StatefulWidget {
 
   static String _drawerImage = 'assets/images/premiumQuotes.jpg';
   static String _appBarName = 'Premium Quotes';
+  static String _appShare =
+      'Check this app! https://play.google.com/store/apps/details?id=com.mundodiferente.premiumquotes';
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -195,7 +197,6 @@ class _HomePageState extends State<HomePage> {
           padding: EdgeInsets.all(
             60.0,
           ),
-          primary: false,
           physics: NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           children: <Widget>[
@@ -259,8 +260,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   title: Text('Share App'),
                   onTap: () {
-                    Share.share(
-                        'Check this app! https://play.google.com/store/apps/details?id=com.mundodiferente.premiumquotes');
+                    Share.share(HomePage._appShare);
                   },
                 ),
                 ListTile(
@@ -293,47 +293,51 @@ class _HomePageState extends State<HomePage> {
         ),
         // fixedAdmobBanner
 
-        body: Flex(
-          direction: Axis.vertical,
-          children: <Widget>[
-            Card(
+        /*
+                    Card(
               elevation: 10.0,
               child: fixedAdmobBanner,
             ),
-            Expanded(
-              //height: MediaQuery.of(context).size.height,
-              //height: double.infinity,
-              child: SingleChildScrollView(
-                child: Screenshot(
-                  controller: HomePage.screenshotController,
-                  child: Container(
-                    height: MediaQuery.of(context).size.height,
-                    decoration: //_gradientContainer == true ?
-                        BoxDecoration(
-                      border: Border.all(
-                        color: _textColor,
-                        width: 10.0,
-                      ),
-                      gradient: LinearGradientStyle.linearGradient(
-                          orientation: _gradientConfig.gradientOrientation,
-                          gradientType: _gradientConfig.gradientColor),
-                    ),
-                    child:
-                        _doubleContainer(), /*ListView(
-                      physics: NeverScrollableScrollPhysics(),
-                      padding: EdgeInsets.all(
-                        65.0,
-                      ),
-                      children: <Widget>[
-                        _titleQuote(),
-                        _subtitleQuote(),
-                      ],
-                    ),*/
-                  ),
+
+        */
+
+        body: Container(
+          height: double.infinity,
+          child: SingleChildScrollView(
+            child: Screenshot(
+              controller: HomePage.screenshotController,
+              child: Container(
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height,
+                  maxHeight: double.infinity,
                 ),
+                //height: double.infinity,
+//                height: MediaQuery.of(context).size.height,
+
+                decoration: //_gradientContainer == true ?
+                    BoxDecoration(
+                  border: Border.all(
+                    color: _textColor,
+                    width: 10.0,
+                  ),
+                  gradient: LinearGradientStyle.linearGradient(
+                      orientation: _gradientConfig.gradientOrientation,
+                      gradientType: _gradientConfig.gradientColor),
+                ),
+                child:
+                    _doubleContainer(), /*ListView(
+                  physics: NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.all(
+                    65.0,
+                  ),
+                  children: <Widget>[
+                    _titleQuote(),
+                    _subtitleQuote(),
+                  ],
+                ),*/
               ),
             ),
-          ],
+          ),
         ),
         floatingActionButton: FancyFab(),
       ),
