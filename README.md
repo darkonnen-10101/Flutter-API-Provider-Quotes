@@ -75,6 +75,15 @@
 `defaultConfig {
    applicationId "com.devName.appName" ... }`
 
+> También agregar arriba del archivo lo siguiente
+> 
+
+`def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}`
+
 > Ahora buscar y abrir el archivo AndroidManifest.xml, que se encuentra dentro de la carpeta android -> app -> src -> main
 >
 > Edit this line
